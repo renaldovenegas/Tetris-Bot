@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 
-
-
 class BasePiece(ABC):
     @abstractmethod
     def rotate(self, num_times):
@@ -115,6 +113,7 @@ class Piece3(BasePiece):
 class Piece4(BasePiece): 
     def __init__(self):
         self.orientations = [[[0,1], [0,1], [1,1]], [[1, 0, 0], [1, 1, 1]], [[1, 1], [1, 0], [1, 0]], [[1,1,1], [0, 0, 1]]]
+        self.num_orientations = 4
         self.current_index = 0
         self.current_orientation = self.orientations[0]
         self.num_rows = len(self.current_orientation)
@@ -122,7 +121,7 @@ class Piece4(BasePiece):
         self.top_left = (0, 0) #x and y of top left corner, defaults 0, 0 
 
     def rotate(self, num_times): 
-        self.current_index = (self.current_index + num_times) % NUM_ORIENTATIONS
+        self.current_index = (self.current_index + num_times) % self.num_orientations
         self.current_orientation = self.orientations[self.current_index]
         self.num_rows = len(self.current_orientation)
         self.num_cols = len(self.current_orientation[0]) 
