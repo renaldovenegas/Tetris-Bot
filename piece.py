@@ -15,9 +15,20 @@ class BasePiece(ABC):
         pass
 
 
-class Piece1(BasePiece): 
+class PieceL(BasePiece): 
     def __init__(self):
-        self.orientations = [[[1, 0], [1, 0], [1,1]], [[1, 1, 1], [1, 0, 0]], [[1, 1], [0, 1], [0, 1]], [[0, 0, 1], [1, 1, 1]]]
+        self.orientations = [
+                            [[1, 0], 
+                             [1, 0], 
+                             [1, 1]],
+                            [[1, 1, 1], 
+                             [1, 0, 0]], 
+                            [[1, 1], 
+                             [0, 1], 
+                             [0, 1]], 
+                            [[0, 0, 1], 
+                             [1, 1, 1]]
+                            ]
         self.num_orientations = 4
         self.current_index = 0
         self.current_orientation = self.orientations[0]
@@ -47,9 +58,15 @@ class Piece1(BasePiece):
         return self.top_left
 
 
-class Piece2(BasePiece): 
+class PieceI(BasePiece): 
     def __init__(self):
-        self.orientations = [[[1], [1], [1], [1]], [[1,1,1,1]]]
+        self.orientations = [
+                            [[1], 
+                             [1], 
+                             [1], 
+                             [1]], 
+                            [[1,1,1,1]]
+                            ]
         self.num_orientations = 2
         self.current_index = 0
         self.current_orientation = self.orientations[0]
@@ -78,9 +95,12 @@ class Piece2(BasePiece):
     def get_location(self): 
         return self.top_left
 
-class Piece3(BasePiece): 
+class PieceO(BasePiece): 
     def __init__(self):
-        self.orientations = [[[1,1], [1,1]]]
+        self.orientations = [
+                            [[1,1], 
+                             [1,1]]
+                            ]
         self.num_orientations = 1
         self.current_index = 0
         self.current_orientation = self.orientations[0]
@@ -110,9 +130,19 @@ class Piece3(BasePiece):
         return self.top_left
 
 
-class Piece4(BasePiece): 
+class PieceJ(BasePiece): 
     def __init__(self):
-        self.orientations = [[[0,1], [0,1], [1,1]], [[1, 0, 0], [1, 1, 1]], [[1, 1], [1, 0], [1, 0]], [[1,1,1], [0, 0, 1]]]
+        self.orientations = [
+                            [[0,1], 
+                             [0,1], 
+                             [1,1]], 
+                            [[1, 0, 0], 
+                             [1, 1, 1]], 
+                            [[1, 1], 
+                             [1, 0], 
+                             [1, 0]], 
+                            [[1, 1, 1], 
+                             [0, 0, 1]]]
         self.num_orientations = 4
         self.current_index = 0
         self.current_orientation = self.orientations[0]
@@ -140,4 +170,3 @@ class Piece4(BasePiece):
 
     def get_location(self): 
         return self.top_left
-
