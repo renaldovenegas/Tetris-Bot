@@ -58,24 +58,24 @@ class Board:
         piece_indices = [(i, position + j) for i, piece_row in enumerate(shape) for j, mino in enumerate(piece_row) if mino == 1]
 
         # Let piece fall until there are no empty lines between piece and existing board
-        valid_board = False
-        while not valid_board:
-            prev_row_nonempty = False
-            for i, row in enumerate(self.grid):
-                if 1 in row and i == self.num_rows - 1:
-                    valid_board = True
-                    break
-                elif 1 in row:
-                    prev_row_nonempty = True
-                elif 1 not in row and prev_row_nonempty:
-                    for i, j in piece_indices:
-                        self.grid[i][j] = False
-                    piece_indices = [(i + 1, j) for (i, j) in piece_indices]
-                    for i, j in piece_indices:
-                        self.grid[i][j] = True
-                    break
-                else:
-                    continue
+        # valid_board = False
+        # while not valid_board:
+        #     prev_row_nonempty = False
+        #     for i, row in enumerate(self.grid):
+        #         if 1 in row and i == self.num_rows - 1:
+        #             valid_board = True
+        #             break
+        #         elif 1 in row:
+        #             prev_row_nonempty = True
+        #         elif 1 not in row and prev_row_nonempty:
+        #             for i, j in piece_indices:
+        #                 self.grid[i][j] = False
+        #             piece_indices = [(i + 1, j) for (i, j) in piece_indices]
+        #             for i, j in piece_indices:
+        #                 self.grid[i][j] = True
+        #             break
+        #         else:
+        #             continue
         
         bottom_of_piece = max(mino[0] for mino in piece_indices)
         while bottom_of_piece < self.num_rows - 1:
