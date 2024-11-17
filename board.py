@@ -14,6 +14,10 @@ class Board:
         self.num_rows = num_rows
         self.num_columns = num_columns
         self.grid = [[0 for x in range(num_columns)] for y in range(num_rows)]
+        self.just_placed = " "
+
+        # index of the height: Since index 0 corresponds to the top of the board and index num_rows - 1 corresponds to the bottom of the board
+        self.height = num_rows - 1
 
     
     def can_place(self, piece, position): 
@@ -95,13 +99,15 @@ class Board:
 
             bottom_of_piece += 1
 
+            self.height = min(self.height, min(i for i, _ in piece_indices))
+
         # Clear completed lines
         return self.clear_lines()
 
 
     def clear_lines(self):
         """
-        Identify rows that are not full and remove them from the grid
+        Identify rows that are full and remove them from the grid
 
         Returns the number of rows cleared 
         """
@@ -120,13 +126,14 @@ class Board:
 
     def num_cleared_lines(self, piece, position):
         """
-        Identify rows that are not full and remove them from the grid
+        Given a piece and position, returns the number of lines that will be cleared. Does not modify the board.
 
-        Returns the number of rows cleared 
-        
+        Returns the number of rows cleared. If placing the piece results in game over, returns -1.
         """
         old_grid = self.grid
         res = self.place_piece(piece, position)
+        if self.is_game_over():
+            res = -1
         self.grid = old_grid
         return res
 

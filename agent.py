@@ -1,13 +1,18 @@
 from board import Board
-from piece import Piece
+from piece import *
 
 # This file is still in progress
 
-# reward function
-def reward(board, piece):
-    return 
+# Reward function
+def reward(board, piece, a):
+    old_board = board
+    if board.is_game_over() or board.num_cleared_lines() == -1:
+        return -1
+    placed = board.place_piece(piece, 0)
+    return a * (board.height / ((board.num_rows - 1) ** 2)) + (placed ** 2)
 
-class Game:
-    def __init__(self):
-        self.board = Board(20, 10)
-        self.piece = Piece()
+def forward_search(depth, board, piece, queue):
+    if depth == 0:
+        return -1
+    best = -1
+    # in progress
