@@ -35,6 +35,7 @@ class PieceL(BasePiece):
         self.num_rows = len(self.current_orientation)
         self.num_cols = len(self.current_orientation[0])
         self.top_left = (0, 0) #x and y of top left corner, defaults 0, 0 
+        self.name = "L"
 
     def rotate(self, num_times): 
         self.current_index = (self.current_index + num_times) % self.num_orientations
@@ -73,6 +74,7 @@ class PieceI(BasePiece):
         self.num_rows = len(self.current_orientation)
         self.num_cols = len(self.current_orientation[0])
         self.top_left = (0, 0) #x and y of top left corner, defaults 0, 0 
+        self.name = "I"
 
     def rotate(self, num_times): 
         self.current_index = (self.current_index + num_times) % self.num_orientations
@@ -107,6 +109,7 @@ class PieceO(BasePiece):
         self.num_rows = len(self.current_orientation)
         self.num_cols = len(self.current_orientation[0])
         self.top_left = (0, 0) #x and y of top left corner, defaults 0, 0 
+        self.name = "O"
 
     def rotate(self, num_times): 
         self.current_index = (self.current_index + num_times) % self.num_orientations
@@ -149,6 +152,7 @@ class PieceJ(BasePiece):
         self.num_rows = len(self.current_orientation)
         self.num_cols = len(self.current_orientation[0])
         self.top_left = (0, 0) #x and y of top left corner, defaults 0, 0 
+        self.name = "J"
 
     def rotate(self, num_times): 
         self.current_index = (self.current_index + num_times) % self.num_orientations

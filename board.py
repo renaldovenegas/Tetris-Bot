@@ -18,6 +18,8 @@ class Board:
 
         # index of the height: Since index 0 corresponds to the top of the board and index num_rows - 1 corresponds to the bottom of the board
         self.height = num_rows - 1
+        # number of holes, i.e. unreachable pixels on the board.
+        self.holes = 0
 
     
     def can_place(self, piece, position): 
@@ -49,15 +51,19 @@ class Board:
 
         Returns the number of lines cleared after placing the piece.
         """
-        if not self.can_place(piece, position):
-            raise ValueError("Cannot place piece at the given position.")
-
         shape = piece.get_shape()
+
+        if not self.can_place(piece, position):
+            for i, piece_row in enumerate(shape):
+                for j, mino in enumerate(piece_row):
+                    if mino == 1:
+                        self.grid[i][position + j] = 1
+            return -1
 
         for i, piece_row in enumerate(shape):
             for j, mino in enumerate(piece_row):
                 if mino == 1:
-                    self.grid[i][position + j] = True
+                    self.grid[i][position + j] = 1
 
         piece_indices = [(i, position + j) for i, piece_row in enumerate(shape) for j, mino in enumerate(piece_row) if mino == 1]
 
@@ -92,17 +98,33 @@ class Board:
                 break
 
             for i, j in piece_indices:
-                self.grid[i][j] = False
+                self.grid[i][j] = 0
             piece_indices = [(i + 1, j) for (i, j) in piece_indices]
             for i, j in piece_indices:
-                self.grid[i][j] = True
+                self.grid[i][j] = 1
 
             bottom_of_piece += 1
 
-            self.height = min(self.height, min(i for i, _ in piece_indices))
 
         # Clear completed lines
-        return self.clear_lines()
+        cleared = self.clear_lines()
+
+        # Update height
+        for i in range(0, self.num_rows):
+            if 1 in self.grid[i]:
+                self.height = i
+                break
+
+        # Re-count the number of holes
+        self.holes = 0
+        ceiling = self.grid[0]
+        for i in range(1, self.num_rows):
+            for j in range(self.num_columns):
+                if not self.grid[i][j] and ceiling[j]:
+                    self.holes += 1
+            ceiling = [self.grid[i][k] or ceiling[k] for k in range(self.num_columns)]
+
+        return cleared
 
 
     def clear_lines(self):
