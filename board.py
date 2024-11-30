@@ -1,4 +1,5 @@
 from piece import *
+import copy
 
 class Board:
     """
@@ -14,13 +15,14 @@ class Board:
         self.num_rows = num_rows
         self.num_columns = num_columns
         self.grid = [[0 for x in range(num_columns)] for y in range(num_rows)]
-        self.just_placed = " "
 
         # index of the height: Since index 0 corresponds to the top of the board and index num_rows - 1 corresponds to the bottom of the board
         self.height = num_rows - 1
         # number of holes, i.e. unreachable pixels on the board.
         self.holes = 0
 
+    def __copy__(self):
+        return copy.deepcopy(self)
     
     def can_place(self, piece, position): 
         """
@@ -152,11 +154,10 @@ class Board:
 
         Returns the number of rows cleared. If placing the piece results in game over, returns -1.
         """
-        old_grid = self.grid
-        res = self.place_piece(piece, position)
-        if self.is_game_over():
+        temp_board = copy.copy(self)
+        res = temp_board.place_piece(piece, position)
+        if temp_board.is_game_over():
             res = -1
-        self.grid = old_grid
         return res
 
 

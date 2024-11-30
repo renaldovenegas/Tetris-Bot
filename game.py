@@ -1,5 +1,6 @@
 from board import Board
 from piece import *
+from rewards import *
 import random
 
 class Game:
@@ -33,6 +34,15 @@ class Game:
         self.display()
         while True:
             input("Press enter to continue")
+            best, reward = forward_search_with_heurstic_pruning(5, self.board, self.current_piece, self.queue)
+            self.current_piece.rotate(best[0])
+            self.board.place_piece(self.current_piece, best[1])
+            self.update_queue()
+            self.display()
+            if self.board.is_game_over():
+                print("Game over!")
+                break
+
 
 
     def play_random(self):
