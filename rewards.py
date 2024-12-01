@@ -10,7 +10,7 @@ import copy
 #     the piece at the given position results in game over.
 #     """
 #     if board.is_game_over() or board.num_cleared_lines(piece, position) == -1:
-#         return -math.inf
+#         return -1
 #     return (board.num_cleared_lines(piece, position) ** 2)
 
 def heursitic_reward(board, piece, position, a):
@@ -28,26 +28,10 @@ def heursitic_reward(board, piece, position, a):
     height = temp_board.height
     num_rows = temp_board.num_rows
     holes = temp_board.holes
+    
+    # Uncomment to see the boards tested out by the forward search when running Game.play_self()
     # temp_board.display()
-    # print(piece.name, "placed at", position)
     return (a * (height / ((num_rows - 1) ** 2)) + (placed ** 2), holes)
-
-# def forward_search(depth, board, piece, queue):
-#     if depth == 0:
-#         return reward(board, piece, A)
-#     best = (0, 0)
-#     max_reward = 0
-#     old_grid = board.grid
-#     for j, orientation in enumerate(piece.orientations):
-#         width = len(orientation[0])
-#         for i in range(board.num_columns - width + 1):
-#             board.place_piece(piece, i)
-#             recursive_step = forward_search(depth - 1, board, queue[0], queue[1:])
-#             if recursive_step > max_reward:
-#                 max_reward = recursive_step
-#                 best = (j, i)
-#             board.grid = old_grid
-#     return max_reward
 
 def forward_search_with_heurstic_pruning(depth, board, piece, queue, height_weight):
     """
@@ -73,9 +57,11 @@ def forward_search_with_heurstic_pruning(depth, board, piece, queue, height_weig
                 holes = reward[1]
                 reward = reward[0]
 
+                #If the piece results in an increase in the number of holes, we prune this branch and continue.
                 if holes - old_holes > 0:
                     continue
-
+                
+                # Checks if the reward is greater than the best reward found so far
                 if reward > max_reward:
                     max_reward = reward
                     best = ((i + 1) % piece.num_orientations, j)
@@ -86,17 +72,21 @@ def forward_search_with_heurstic_pruning(depth, board, piece, queue, height_weig
             piece.rotate(1)
             for j in range(board.num_columns - piece.num_cols + 1):
                 reward = heursitic_reward(board, piece, j, height_weight)
+                # Checks if the piece at the given position results in game over
                 if reward == -1:
                     break
                 holes = reward[1]
                 reward = reward[0]
 
+                #If the piece results in an increase in the number of holes, we prune this branch and continue. 
                 if holes - old_holes > 0:
                     continue
 
+                #Temporary board for the recursive call
                 temp_board = copy.copy(board)
                 temp_board.place_piece(piece, j)
 
+                #Recursive call. Checks if total reweard is greater than the best reward found so far.
                 _, recursive_reward = forward_search_with_heurstic_pruning(depth - 1, temp_board, queue[0], queue[1:], height_weight)
                 if reward + recursive_reward > max_reward:
                     max_reward = reward + recursive_reward

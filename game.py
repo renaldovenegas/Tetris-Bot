@@ -7,6 +7,8 @@ class Game:
     def __init__(self, simplified):
         """
         Initialize the game. Sets up the board, pieces, and bag.
+
+        - simplified: If true, game is initialized with only the L, J, I, and O pieces. If not, game is initialized with all 7 pieces.
         """
         self.board = Board(20, 10)
         self.pieces = set([PieceL(), PieceJ(), PieceI(), PieceO(), PieceT(), PieceS(), PieceZ()])
@@ -19,6 +21,8 @@ class Game:
         if self.simplified:
             self.current_piece = self.bag.pop()
         else:
+            # If not simplified, start with an I piece. This is to avoid a game starting with a S or Z piece which would 
+            # cause the board to immediately have a hole.
             self.current_piece = PieceI()
             self.bag = set([PieceJ(), PieceL(), PieceO(), PieceT(), PieceS(), PieceZ()])
 
@@ -40,11 +44,21 @@ class Game:
         self.queue.append(self.bag.pop())
 
     def play_search(self, depth=5, height_weight=16):
+        """
+        Play the game using forward search with heurstic pruning. 
+        The game is played until game over. At each iteration, the current piece is rotated, 
+        placed at the top of the board, and then the queue of pieces is updated. The game state is displayed after each iteration.
+
+        - depth: The depth of the search tree. Value must be between 2 and 5, inclusive.
+        - height_weight: The weight of the height heuristic.
+        """
         self.display()
         while True:
             input("Press enter to continue")
+            # Inserts an I piece into a copy of the queue, so the planning can be done with an I piece in mind.
             queue_copy = self.queue.copy()
-            queue_copy[3] = PieceI()
+            queue_copy[depth - 2] = PieceI()
+            # Finds optimal move with forward search
             best, _ = forward_search_with_heurstic_pruning(depth, self.board, self.current_piece, queue_copy, height_weight)
             self.current_piece.rotate(best[0])
             self.board.place_piece(self.current_piece, best[1])
@@ -53,7 +67,6 @@ class Game:
             if self.board.is_game_over():
                 print("Game over!")
                 break
-
 
 
     def play_random(self):

@@ -69,26 +69,7 @@ class Board:
 
         piece_indices = [(i, position + j) for i, piece_row in enumerate(shape) for j, mino in enumerate(piece_row) if mino == 1]
 
-        # Let piece fall until there are no empty lines between piece and existing board
-        # valid_board = False
-        # while not valid_board:
-        #     prev_row_nonempty = False
-        #     for i, row in enumerate(self.grid):
-        #         if 1 in row and i == self.num_rows - 1:
-        #             valid_board = True
-        #             break
-        #         elif 1 in row:
-        #             prev_row_nonempty = True
-        #         elif 1 not in row and prev_row_nonempty:
-        #             for i, j in piece_indices:
-        #                 self.grid[i][j] = False
-        #             piece_indices = [(i + 1, j) for (i, j) in piece_indices]
-        #             for i, j in piece_indices:
-        #                 self.grid[i][j] = True
-        #             break
-        #         else:
-        #             continue
-        
+        # Drops the piece. Places a piece at the top of the board and moves it down until it no longer can.        
         bottom_of_piece = max(mino[0] for mino in piece_indices)
         while bottom_of_piece < self.num_rows - 1:
             done = False
@@ -99,6 +80,7 @@ class Board:
             if done:
                 break
 
+            # Move the piece down by one row: clear the old piece and place the new piece.
             for i, j in piece_indices:
                 self.grid[i][j] = 0
             piece_indices = [(i + 1, j) for (i, j) in piece_indices]
@@ -136,13 +118,12 @@ class Board:
         Returns the number of rows cleared 
         """
         new_grid = [row for row in self.grid if 0 in row]
-        lines_cleared = len(self.grid) - len(new_grid)  # Calculate how many lines were cleared
+        # Calculate how many lines were cleared
+        lines_cleared = len(self.grid) - len(new_grid) 
 
         # Add empty rows to maintain grid size
         for _ in range(lines_cleared):
             new_grid.insert(0, [0] * self.num_columns)
-
-        #can add check here to make sure grid size is consistent 
 
         self.grid = new_grid
         return lines_cleared
