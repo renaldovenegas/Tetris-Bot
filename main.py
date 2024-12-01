@@ -9,4 +9,4 @@ if __name__ == "__main__":
     game = Game(simplified)
 
     # game.play_random()
-    game.play_search(depth=5, height_weight=4)
+    game.play_search(depth=5, height_weight=16)

@@ -16,7 +16,12 @@ class Game:
         self.num_pieces = len(self.pieces)
         self.bag = self.pieces.copy()
 
-        self.current_piece = self.bag.pop()
+        if self.simplified:
+            self.current_piece = self.bag.pop()
+        else:
+            self.current_piece = PieceI()
+            self.bag = set([PieceJ(), PieceL(), PieceO(), PieceT(), PieceS(), PieceZ()])
+
         self.queue = []
         while len(self.queue) < 4:
             if len(self.bag) == 0:
@@ -38,7 +43,9 @@ class Game:
         self.display()
         while True:
             input("Press enter to continue")
-            best, _ = forward_search_with_heurstic_pruning(depth, self.board, self.current_piece, self.queue, height_weight)
+            queue_copy = self.queue.copy()
+            queue_copy[3] = PieceI()
+            best, _ = forward_search_with_heurstic_pruning(depth, self.board, self.current_piece, queue_copy, height_weight)
             self.current_piece.rotate(best[0])
             self.board.place_piece(self.current_piece, best[1])
             self.update_queue()

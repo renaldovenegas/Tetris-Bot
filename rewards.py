@@ -28,7 +28,7 @@ def heursitic_reward(board, piece, position, a):
     height = temp_board.height
     num_rows = temp_board.num_rows
     holes = temp_board.holes
-    temp_board.display()
+    # temp_board.display()
     # print(piece.name, "placed at", position)
     return (a * (height / ((num_rows - 1) ** 2)) + (placed ** 2), holes)
 
