@@ -4,12 +4,16 @@ from rewards import *
 import random
 
 class Game:
-    def __init__(self):
+    def __init__(self, simplified):
         """
         Initialize the game. Sets up the board, pieces, and bag.
         """
         self.board = Board(20, 10)
-        self.pieces = set([PieceL(), PieceJ(), PieceI(), PieceO()])
+        self.pieces = set([PieceL(), PieceJ(), PieceI(), PieceO(), PieceT(), PieceS(), PieceZ()])
+        self.simplified = simplified
+        if simplified:
+            self.pieces = set([PieceL(), PieceJ(), PieceI(), PieceO()])
+        self.num_pieces = len(self.pieces)
         self.bag = self.pieces.copy()
 
         self.current_piece = self.bag.pop()
@@ -30,11 +34,11 @@ class Game:
             self.bag = self.pieces.copy()
         self.queue.append(self.bag.pop())
 
-    def play_search(self):
+    def play_search(self, depth=5, height_weight=16):
         self.display()
         while True:
             input("Press enter to continue")
-            best, reward = forward_search_with_heurstic_pruning(5, self.board, self.current_piece, self.queue)
+            best, _ = forward_search_with_heurstic_pruning(depth, self.board, self.current_piece, self.queue, height_weight)
             self.current_piece.rotate(best[0])
             self.board.place_piece(self.current_piece, best[1])
             self.update_queue()

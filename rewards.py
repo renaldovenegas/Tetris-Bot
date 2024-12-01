@@ -3,8 +3,6 @@ from piece import *
 import math
 import copy
 
-# Current value for A parameter to weight the height of the board in heuristic reward calculation
-A = 16
 
 # def reward(board, piece, position):
 #     """
@@ -31,6 +29,7 @@ def heursitic_reward(board, piece, position, a):
     num_rows = temp_board.num_rows
     holes = temp_board.holes
     temp_board.display()
+    # print(piece.name, "placed at", position)
     return (a * (height / ((num_rows - 1) ** 2)) + (placed ** 2), holes)
 
 # def forward_search(depth, board, piece, queue):
@@ -50,7 +49,7 @@ def heursitic_reward(board, piece, position, a):
 #             board.grid = old_grid
 #     return max_reward
 
-def forward_search_with_heurstic_pruning(depth, board, piece, queue):
+def forward_search_with_heurstic_pruning(depth, board, piece, queue, height_weight):
     """
     Recursively search all the possible moves of the current piece and all the pieces in the queue, 
     and return the best move and the corresponding best reward. The search is done with heurstic pruning, 
@@ -59,13 +58,14 @@ def forward_search_with_heurstic_pruning(depth, board, piece, queue):
     """
     best = (0, 0)
     max_reward = 0
+    old_holes = board.holes
 
     # Base case
     if depth == 1:
         for i in range(piece.num_orientations):
             piece.rotate(1)
             for j in range(board.num_columns - piece.num_cols + 1):
-                reward = heursitic_reward(board, piece, j, A)
+                reward = heursitic_reward(board, piece, j, height_weight)
 
                 # Checks if the piece at the given position results in game over
                 if reward == -1:
@@ -73,7 +73,7 @@ def forward_search_with_heurstic_pruning(depth, board, piece, queue):
                 holes = reward[1]
                 reward = reward[0]
 
-                if holes > 0:
+                if holes - old_holes > 0:
                     continue
 
                 if reward > max_reward:
@@ -85,19 +85,19 @@ def forward_search_with_heurstic_pruning(depth, board, piece, queue):
         for i in range(piece.num_orientations):
             piece.rotate(1)
             for j in range(board.num_columns - piece.num_cols + 1):
-                reward = heursitic_reward(board, piece, j, A)
+                reward = heursitic_reward(board, piece, j, height_weight)
                 if reward == -1:
                     break
                 holes = reward[1]
                 reward = reward[0]
 
-                if holes > 0:
+                if holes - old_holes > 0:
                     continue
 
                 temp_board = copy.copy(board)
                 temp_board.place_piece(piece, j)
 
-                _, recursive_reward = forward_search_with_heurstic_pruning(depth - 1, temp_board, queue[0], queue[1:])
+                _, recursive_reward = forward_search_with_heurstic_pruning(depth - 1, temp_board, queue[0], queue[1:], height_weight)
                 if reward + recursive_reward > max_reward:
                     max_reward = reward + recursive_reward
                     best = ((i + 1) % piece.num_orientations, j)
