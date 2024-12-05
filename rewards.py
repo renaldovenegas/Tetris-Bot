@@ -3,15 +3,21 @@ from piece import *
 import math
 import copy
 
+score_dict = {
+    0: 0,
+    1: 100,
+    2: 300,
+    3: 500,
+    4: 800}
 
-# def reward(board, piece, position):
-#     """
-#     Returns the raw reward for dropping the piece at the given position, i.e. the points gained by clearing lines。returns -1 if
-#     the piece at the given position results in game over.
-#     """
-#     if board.is_game_over() or board.num_cleared_lines(piece, position) == -1:
-#         return -1
-#     return (board.num_cleared_lines(piece, position) ** 2)
+def raw_score(board, piece, position):
+    """
+    Returns the raw reward for dropping the piece at the given position, i.e. the points gained by clearing lines。returns -1 if
+    the piece at the given position results in game over.
+    """
+    if board.is_game_over() or board.num_cleared_lines(piece, position) == -1:
+        return 0
+    return score_dict[board.num_cleared_lines(piece, position)]
 
 def heursitic_reward(board, piece, position, a):
     """
@@ -32,6 +38,23 @@ def heursitic_reward(board, piece, position, a):
     # Uncomment to see the boards tested out by the forward search when running Game.play_self()
     # temp_board.display()
     return (a * (height / ((num_rows - 1) ** 2)) + (placed ** 2), holes)
+
+def naive_search(board, piece, height_weight):
+    """
+    Returns the best action when considering immediate reward, along with that associated reward.
+    """
+    best = (0, 0)
+    max_reward = 0
+    for i in range(piece.num_orientations):
+        piece.rotate(1)
+        for j in range(board.num_columns - piece.num_cols + 1):
+            reward = heursitic_reward(board, piece, j, height_weight)
+            if reward == -1:
+                break
+            if reward[0] > max_reward:
+                max_reward = reward[0]
+                best = ((i + 1) % piece.num_orientations, j)
+    return best, max_reward
 
 def forward_search_with_heurstic_pruning(depth, board, piece, queue, height_weight):
     """
