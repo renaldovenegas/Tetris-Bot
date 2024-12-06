@@ -7,4 +7,4 @@ if __name__ == "__main__":
 
     # game.play_random()
     # game.play_naive(height_weight=16, rounds=100)
-    game.play_search(depth=5, height_weight=16, rounds=100, anticipate_I=True)
+    game.play_search(depth=3, height_weight=16, rounds=100, anticipate_I=True)

@@ -38,7 +38,9 @@ class Game:
         while len(self.queue) < 4:
             if len(self.bag) == 0:
                 self.bag = self.pieces.copy()
-            self.queue.append(self.bag.pop())
+            cur = (random.sample(self.bag, 1)[0])
+            self.queue.append(cur)
+            self.bag.remove(cur)   
 
 
     def update_queue(self):
@@ -49,7 +51,10 @@ class Game:
         self.current_piece = self.queue.pop(0)
         if len(self.bag) == 0:
             self.bag = self.pieces.copy()
-        self.queue.append(self.bag.pop())
+        cur = (random.sample(self.bag, 1)[0])
+        self.queue.append(cur)
+        self.bag.remove(cur)    
+
 
     def play_search(self, depth=5, height_weight=16, rounds=100, anticipate_I=True):
         """
